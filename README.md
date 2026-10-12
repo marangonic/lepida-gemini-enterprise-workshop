@@ -31,6 +31,10 @@ git clone https://github.com/marangonic/lepida-gemini-enterprise-workshop.git ~/
 
 ## PASSO PRELIMINARE (Automatico, 30 Secondi) — Scarica ed Esegui la Preparazione dell'Ambiente
 
+> [!IMPORTANT]
+> **NB: Serve creare una App a mano in Gemini Enterprise per attivare le sottoscrizioni trial**
+> *(Nella Console Google Cloud vai su **Gemini Enterprise -> Apps -> Create app** e crea una prima App qualsiasi per attivare la sottoscrizione Free Trial del progetto prima o dopo il lancio dello script).*
+
 Tutta l'infrastruttura tecnica del tuo laboratorio personale (il tuo **Bucket Cloud Storage univoco**, i **10 documenti pubblici della PA**, il **Connettore di ricerca indicizzato** e l'**App Gemini Enterprise** già pronta) viene creata **in automatico con un solo comando**.
 
 1. Nella barra blu in alto a destra della Console Google Cloud, clicca sull'icona **`>_`** (**Activate Cloud Shell**).
