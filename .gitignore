@@ -1,0 +1,6 @@
+toolbox
+__pycache__/
+*.pyc
+WEB_APP_URL.txt
+tools.yaml
+PLAYBOOK_DOCENTE_WORKSHOP_LEPIDA.md
