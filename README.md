@@ -96,6 +96,23 @@ Nella scheda **`Flow`** al centro dello schermo puoi progettare un'architettura 
 
 ---
 
+### 2.3 Test Rapido del Chat Agent (Verifica del Grounding sul Connettore Cloud Storage)
+Prima di passare alle Skills del Modulo 3, clicca su **Update** (o **Create**) in alto a destra, apri la scheda **Preview** e fai subito una prima domanda al tuo Chat Agent per verificare che interroghi correttamente i documenti del tuo Data Store Cloud Storage:
+
+```text
+Quali sono i 4 Bandi Regionali 2026 gestiti con il supporto di Lepida, quali sono le rispettive percentuali di contributo a fondo perduto, qual è il punteggio minimo per l'approvazione e come funzionano le premialità aggiuntive?
+```
+
+**Risultato atteso (estratto automaticamente dal `Doc 02` — Linee Guida Bandi 2026):**
+- **`BANDO-ER-2026-01`** (*Scuole e Municipi 10 Gbps*): fondo perduto base **`85%`** (dotazione `4.500.000 €`).
+- **`BANDO-ER-2026-02`** (*AI Generativa & Sportelli Digitali Comuni*): fondo perduto base **`80%`** (dotazione `3.200.000 €`).
+- **`BANDO-ER-2026-03`** (*Cybersecurity NIS2 & SOC Territoriale*): fondo perduto base **`90%`** (dotazione `2.800.000 €`).
+- **`BANDO-ER-2026-04`** (*Smart City, Sensoristica IoT & Gemello Digitale*): fondo perduto base **`75%`** (dotazione `5.000.000 €`).
+- **Soglie punteggio tecnico:** **`>= 70/100`** Approvata | **`60–69/100`** Integrazione richiesta entro 15 gg | **`< 60/100`** Non ammessa.
+- **Premialità cumulative:** **`+5%`** Comune Montano/Area Interna, **`+5%`** Unione di Comuni ($\ge 3$ Comuni), **`+5%`** Comune $< 15.000$ abitanti, con **tetto massimo inderogabile del `95%`**.
+
+---
+
 ## MODULO 3 — Creare e Utilizzare le "Skills" in Gemini Enterprise (45 min)
 
 Una **Skill** all'interno di **Gemini Enterprise** è una competenza operativa strutturata e riutilizzabile che insegna all'agente **come eseguire un processo amministrativo o tecnico complesso** (quali documenti del Data Store incrociare, quali regole matematiche o normative applicare e quale formato di output restituire).
