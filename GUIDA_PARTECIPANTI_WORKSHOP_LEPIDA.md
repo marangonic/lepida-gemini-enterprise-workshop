@@ -92,51 +92,46 @@ Quali sono i 4 Bandi Regionali 2026 gestiti con il supporto di Lepida, quali son
 
 Una **Skill** all'interno di **Gemini Enterprise** è una competenza operativa strutturata e riutilizzabile che insegna all'agente **come eseguire un processo amministrativo o tecnico complesso** (quali documenti del Data Store incrociare, quali regole matematiche o normative applicare e quale formato di output restituire).
 
-In Gemini Enterprise puoi definire e utilizzare le **Skills** in **due modalità complementari**:
+In Gemini Enterprise esistono **due modalità distinte e complementari** per utilizzare le Skills:
+- **Parte A (`Skills` nel menu laterale $\rightarrow$ usata dall'Assistente Principale in `New chat`):** serve per insegnare una procedura standard (attivabile/disattivabile con un interruttore **Enabled**) all'**Assistente Principale di Gemini Enterprise** di tutta l'organizzazione.
+- **Parte B (`Instructions` dentro il tuo `Chat Agent`):** serve per incorporare le competenze direttamente dentro un **Agente Verticale Multi-Livello** (come quello creato nel Modulo 2, che ha il proprio grafo di Sub-Agents e il proprio System Prompt dedicato).
 
 ---
 
-### 3.1 Parte A — Creare una Skill Modulare nella Sezione `Skills` della Web App
+### 3.1 Parte A — Creare 1 Skill nella Sezione `Skills` e Testarla in `New chat`
 1. Nel menu laterale sinistro della Web App di Gemini Enterprise, clicca sulla voce **`Skills`**.
 2. Clicca sul pulsante **`+`** in alto nella colonna `Skills` per creare una nuova Skill riutilizzabile a livello di organizzazione.
    > [!IMPORTANT]
    > Il nome della Skill (*Display Name*) può contenere lettere maiuscole/minuscole, numeri, spazi e trattini (massimo 64 caratteri), ma **non deve contenere caratteri speciali come `&`**.
 
-3. Crea le seguenti **3 Skills ufficiali del Workshop** (oppure verifica quelle già presenti e condividile cliccando su **Share**):
+3. Compila i campi della tua Skill come segue e clicca su **Save** (e poi su **Share** per condividerla, verificando che l'interruttore **Enabled** nella scheda della Skill sia attivo):
+   - **Name (Nome della Skill):**
+     ```text
+     Simulazione Punteggio Bando Fibra 10 Gbps
+     ```
+   - **Description (Quando usarla):**
+     ```text
+     Calcola l'ammissibilità (>=70 pt), le premialità cumulative (tetto 95%) e le 3 tranche di erogazione sui Bandi Lepida 2026.
+     ```
+   - **Instructions (`SKILL.md`):**
+     ```text
+     Quando l'utente chiede di valutare un progetto per un Bando Lepida 2026 o calcolare il contributo:
+     1. Consulta il "Catalogo Servizi e Listino Lepida 2026" (Doc 01) e le "Linee Guida Bandi 2026" (Doc 02).
+     2. Verifica se il punteggio tecnico stimato è >= 70/100 (APPROVATA), tra 60 e 69 (INTEGRAZIONE_RICHIESTA entro 15 gg) o < 60 (NON AMMESSA).
+     3. Partendo dalla quota base del bando (80% AI/Cloud, 85% Fibra, 90% NIS2, 75% IoT), somma le premialità cumulative (+5% Comune Montano/Area Interna, +5% Unione >= 3 Comuni, +5% Comune < 15.000 abitanti) applicando SEMPRE il tetto massimo inderogabile del 95% a fondo perduto.
+     4. Presenta una tabella con Valore Progetto, Aliquota Applicata (%), Contributo Regionale a Fondo Perduto (€), Quota a Carico dell'Ente (€) e le 3 Tranche (40% Anticipo, 30% SAL, 30% Saldo).
+     ```
 
-   - **Skill 1 — `Simulazione Punteggio Bando Fibra 10 Gbps`**
-     - *Description:* `Calcola l'ammissibilità (>=70 pt), le premialità cumulative (tetto 95%) e le 3 tranche di erogazione sui Bandi Lepida 2026.`
-     - *Instruction (`SKILL.md`):*
-       ```text
-       Quando l'utente chiede di valutare un progetto per un Bando Lepida 2026 o calcolare il contributo:
-       1. Consulta il "Catalogo Servizi e Listino Lepida 2026" (Doc 01) e le "Linee Guida Bandi 2026" (Doc 02).
-       2. Verifica se il punteggio tecnico stimato è >= 70/100 (APPROVATA), tra 60 e 69 (INTEGRAZIONE_RICHIESTA entro 15 gg) o < 60 (NON AMMESSA).
-       3. Partendo dalla quota base del bando (80% AI/Cloud, 85% Fibra, 90% NIS2, 75% IoT), somma le premialità cumulative (+5% Comune Montano/Area Interna, +5% Unione >= 3 Comuni, +5% Comune < 15.000 abitanti) applicando SEMPRE il tetto massimo inderogabile del 95% a fondo perduto.
-       4. Presenta una tabella con Valore Progetto, Aliquota Applicata (%), Contributo Regionale a Fondo Perduto (€), Quota a Carico dell'Ente (€) e le 3 Tranche (40% Anticipo, 30% SAL, 30% Saldo).
-       ```
-
-   - **Skill 2 — `Generatore Bozza Determina Dirigenziale PA`**
-     - *Description:* `Redige una bozza strutturata di Determina Dirigenziale di affidamento in-house a Lepida ScpA nelle 6 sezioni ufficiali.`
-     - *Instruction (`SKILL.md`):*
-       ```text
-       Quando l'utente chiede di generare una bozza di Determina Dirigenziale per un Ente:
-       Utilizza obbligatoriamente tutte le 6 SEZIONI del Modello Ufficiale "MOD-DET-INHOUSE-LEPIDA-2026" (Doc 08):
-       - SEZIONE 1: Intestazione dell'Ente, Settore e individuazione del RUP (art. 15 D.Lgs. 36/2023)
-       - SEZIONE 2: Premesse di Fatto e di Diritto (L.R. 11/2004, controllo analogo congiunto su Lepida ScpA)
-       - SEZIONE 3: Motivazione di Congruità Economica (art. 7 comma 2 D.Lgs. 36/2023, canone annuo e SLA dal Catalogo Doc 01 e risparmio >22% vs Consip/MEPA)
-       - SEZIONE 4: Quadro Economico e Piano Finanziario nelle 3 tranche (40% / 30% / 30%)
-       - SEZIONE 5: Clausole Obbligatorie di Conformità ACN, NIS2, GDPR e AI Act UE 2024/1689 (Doc 10: Human-in-the-Loop del RUP, trasparenza art. 50, Model Armor/DLP e log per 24 mesi in Region UE)
-       - SEZIONE 6: Dispositivo della Determina (esenzione CIG ordinario per in-house e tracciabilità tramite CUP).
-       ```
-
-   - **Skill 3 — `Checklist Migrazione Cloud e Sicurezza ACN`**
-     - *Description:* `Genera il piano operativo di migrazione al Datacenter Lepida, adeguamento SOC/CSIRT NIS2 e benchmark progetti Comuni ER.`
-     - *Instruction (`SKILL.md`):*
-       ```text
-       Quando l'utente chiede un piano di migrazione Cloud ACN/NIS2 o un confronto tra i Comuni dell'Emilia-Romagna:
-       1. Riporta i canoni e gli SLA dei 4 Data Center Regionali certificati ACN (Bologna, Ferrara, Modena, Parma), i tempi di notifica CSIRT NIS2 (Early Warning 24h, Notifica 72h, Relazione 30 gg) e la presa in carico SOC Lepida entro 15 minuti.
-       2. Costruisci una Tabella Comparativa tra i Comuni ER (Bologna, Modena, Ravenna, Rimini, Ferrara, Parma, Unione Appennino Bolognese) con Ente, Codice Pratica, Bando, Importo (€), Punteggio, Stato e azioni correttive (es. Allegato Tecnico B2 entro 15 gg per Ferrara).
-       ```
+4. **Esempio di Utilizzo della Skill nella Chat Principale (`New chat`):**
+   Clicca su **`New chat`** in alto a sinistra nel menu laterale di Gemini Enterprise (dove risiede l'Assistente Principale che utilizza automaticamente le Skills abilitate in **`Skills`**) e incolla questa richiesta:
+   ```text
+   Usa la skill Simulazione Punteggio Bando Fibra 10 Gbps per un Comune montano di 8.500 abitanti che presenta un progetto da 100.000 EUR sul Bando Fibra 10 Gbps (quota base 85%) con punteggio tecnico 82/100: calcola l'aliquota finale a fondo perduto, la quota a carico del Comune e le 3 tranche di erogazione.
+   ```
+   **Risultato atteso in `New chat`:**
+   - **Stato:** Pratica **APPROVATA** (`82/100 >= 70/100`).
+   - **Aliquota con premialità:** `85% (base Fibra) + 5% (Comune Montano) + 5% (< 15.000 ab.) = 95%` (entro il tetto massimo del 95%).
+   - **Contributo Regionale a fondo perduto:** **`95.000,00 €`** | **Quota a carico del Comune:** **`5.000,00 €`**.
+   - **3 Tranche di erogazione:** 1ª Tranche Anticipo (40%) = **`38.000,00 €`** | 2ª Tranche SAL (30%) = **`28.500,00 €`** | 3ª Tranche Saldo (30%) = **`28.500,00 €`**.
 
 ---
 
