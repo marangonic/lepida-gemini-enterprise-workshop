@@ -166,10 +166,12 @@ In Gemini Enterprise puoi definire e utilizzare le **Skills** in **due modalità
 ---
 
 ### 3.2 Parte B — Inserire le 3 Skills nel campo `Instructions` del tuo Chat Agent
-1. Torna in **Agents**, apri il tuo Chat Agent **`Consulente Digitale Comuni ER e Servizi Lepida`** e nel campo **Instructions (Istruzioni)** copia e incolla integralmente il blocco seguente:
+1. Torna in **Agents**, apri il tuo Chat Agent **`Consulente Digitale Comuni ER e Servizi Lepida`**, clicca sul **nodo principale blu** nel canvas (`Consulente Digitale Comuni ER e Servizi Lepida`) e individua il campo **Instructions (Istruzioni)** nel pannello di destra.
+2. **Puoi sia sostituire tutto il testo eventualmente già presente nel campo `Instructions`, sia incollarlo in aggiunta in fondo**: il blocco qui sotto è già **completo e autonomo** (contiene sia il coordinamento dei Sub-Agents creati nel Modulo 2, sia le 3 Skills del Modulo 3):
 
 ```text
-Rispondi sempre in italiano con tono istituzionale, chiaro e strutturato, citando sempre i documenti ufficiali presenti nel Data Store Cloud Storage.
+Sei il Consulente Digitale dei Comuni dell'Emilia-Romagna e dei Servizi Lepida ScpA.
+Coordina i tuoi Sub-Agents specializzati ("Specialista Bandi e Cloud Lepida" e "Specialista Atti PA e Benchmark Comuni") e rispondi sempre in italiano con tono istituzionale, chiaro e strutturato, citando sempre i documenti ufficiali presenti nel Data Store Cloud Storage.
 Disponi di 3 SKILLS OPERATIVE specializzate che devi eseguire rigorosamente quando richiesto dall'utente:
 
 === [SKILL 1: VALUTAZIONE E SIMULAZIONE BANDO COMUNALE] ===
