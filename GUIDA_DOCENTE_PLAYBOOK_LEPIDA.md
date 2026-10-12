@@ -1,24 +1,39 @@
 # Playbook Docente & Regia Tecnica — Workshop Lepida ScpA & Comuni dell'Emilia-Romagna (Moduli 2 & 3)
 
-> **Obiettivo del Workshop per i 25 Partecipanti:** far svolgere ai partecipanti **esclusivamente i due laboratori ad alto valore aggiunto** dentro la Web App di **Gemini Enterprise** (**Modulo 2 — Creare il Proprio Chat Agent No-Code con `Gemini 3.8 Flash`** e **Modulo 3 — Creare e Utilizzare le "Skills"**), mentre tutta la preparazione infrastrutturale (Bucket GCS univoco per ciascuno dei 26 ambienti, 10 documenti della PA, Connettore GCS indicizzato in 2 secondi, attivazione licenza Free Trial, creazione dell'App Gemini Enterprise e sblocco delle feature `Chat agent` e `Skills`) avviene in **30 secondi** scaricando ed eseguendo un singolo comando dal repository GitHub.
+> **Obiettivo del Workshop per i 27 Utenti (26 Partecipanti + 1 Docente):** far svolgere ai partecipanti **esclusivamente i due laboratori ad alto valore aggiunto** dentro la Web App di **Gemini Enterprise** (**Modulo 2 — Creare il Proprio Chat Agent No-Code con `Gemini 3.8 Flash`** e **Modulo 3 — Creare e Utilizzare le "Skills"**), mentre tutta la preparazione infrastrutturale (**Bucket GCS garantito univoco per ciascuno dei 27 utenti/ambienti**, 10 documenti della PA, Connettore GCS indicizzato in 2 secondi, attivazione licenza Free Trial, creazione dell'App Gemini Enterprise e sblocco delle feature `Chat agent` e `Skills`) avviene in **~60 secondi** scaricando ed eseguendo un singolo comando dal repository GitHub.
 
 ---
 
-## 1. Repository GitHub Ufficiale e Comandi Rapidi
+## 1. Repository GitHub Ufficiale, Univocità dei 27 Bucket GCS e Comandi Rapidi
 
 Tutti gli script e i dataset sono pubblicati e pronti da scaricare dal repository GitHub:
 - **Repository:** `https://github.com/marangonic/lepida-gemini-enterprise-workshop`
 
-### A. Comando Unico per i 25 Partecipanti (~30 secondi)
+### Come è garantita l'univocità dei 27 Bucket GCS e dei 27 Connettori (Zero Valori Statici)
+In Google Cloud Storage i nomi dei bucket sono **univoci a livello globale mondiale**. Se i 27 utenti provassero a creare un bucket con un nome fisso (es. `gs://lepida-comuni-er`), solo il primo utente ci riuscirebbe e gli altri 26 riceverebbero `409 Conflict: Bucket already exists`.
+Per questo motivo gli script (`setup.sh`, `setup_workshop_data.py` e `setup_ge_datastore.py`) **non contengono alcun nome di bucket statico**:
+1. All'avvio, lo script rileva dinamicamente il **`PROJECT_ID` univoco del singolo laboratorio Qwiklabs** (`gcloud config get-value project`, es. `qwiklabs-gcp-02-e71aeab0dc46`).
+2. Costruisce dinamicamente il nome del bucket come:
+   ```text
+   gs://${PROJECT_ID}-lepida-comuni-er
+   ```
+3. Poiché Qwiklabs assegna a ciascuno dei **27 utenti** un progetto isolato con un suffisso esadecimale univoco di 12 caratteri:
+   - **Utente #1:** crea `gs://qwiklabs-gcp-00-436de4629ca8-lepida-comuni-er` → collegato al suo connettore `lepida-comuni-er-ds`
+   - **Utente #2:** crea `gs://qwiklabs-gcp-02-e71aeab0dc46-lepida-comuni-er` → collegato al suo connettore `lepida-comuni-er-ds`
+   - **...**
+   - **Utente #27:** crea `gs://qwiklabs-gcp-04-9f8e7d6c5b4a-lepida-comuni-er` → collegato al suo connettore `lepida-comuni-er-ds`
+4. Subito dopo, `setup_ge_datastore.py` legge la stessa variabile `BUCKET_NAME = f"{PROJECT_ID}-lepida-comuni-er"` e configura automaticamente il connettore `lepida-comuni-er-ds` puntando a `gs://${PROJECT_ID}-lepida-comuni-er/documenti_pa/*.html`. *(Inoltre, se mai due utenti dovessero operare dentro lo stesso progetto GCP, basta esportare `export LEPIDA_BUCKET_NAME="${PROJECT_ID}-lepida-utente-01"` e sia il bucket sia il connettore useranno quel nome).*
+
+### A. Comando Unico per i Partecipanti (~60 secondi)
 Ogni partecipante apre **Cloud Shell** (`>_`) nel proprio ambiente Qwiklabs e incolla:
 ```bash
 git clone https://github.com/marangonic/lepida-gemini-enterprise-workshop.git ~/lepida_workshop && ~/lepida_workshop/setup.sh
 ```
-**Cosa esegue automaticamente in ~30 secondi (`setup.sh`):**
+**Cosa esegue automaticamente in ~60 secondi (`setup.sh`):**
 1. Abilita le API (`discoveryengine.googleapis.com`, `storage.googleapis.com`, `aiplatform.googleapis.com`, `bigquery.googleapis.com`, `logging.googleapis.com`).
-2. Crea il **Bucket Cloud Storage univoco** `gs://<PROJECT_ID>-lepida-comuni-er` e carica i **10 documenti HTML pubblici** di Lepida e dei Comuni dell'Emilia-Romagna (`setup_workshop_data.py`).
+2. Crea il **Bucket Cloud Storage univoco per quel singolo utente** `gs://<PROJECT_ID>-lepida-comuni-er` e carica i **10 documenti HTML pubblici** di Lepida e dei Comuni dell'Emilia-Romagna (`setup_workshop_data.py`).
 3. Attiva via API la licenza a 30 giorni **`free_trial_gemini`** (`enableLicenseAutoRegister: true` su `default_user_store`) e configura **Google Identity** (`IDP_TYPE_GSUITE` su `locations/global/aclConfig`).
-4. Crea il Data Store **`lepida-comuni-er-ds`** (*"Corpus Documentale Lepida e Comuni Emilia-Romagna 2026"*) e **indicizza in modo sincrono in 2 secondi** tutti i 10 documenti (`branches/0/documents` + job `gcsSource`).
+4. Crea il Data Store **`lepida-comuni-er-ds`** (*"Corpus Documentale Lepida e Comuni Emilia-Romagna 2026"*) collegato al bucket univoco `gs://<PROJECT_ID>-lepida-comuni-er/documenti_pa/*.html` e **indicizza in modo sincrono in 2 secondi** tutti i 10 documenti (`branches/0/documents` + job `gcsSource`).
 5. Crea l'App Gemini Enterprise **`Lepida & Comuni ER Assistant`** (`lepida-comuni-er-app`) già collegata al Data Store `lepida-comuni-er-ds` e abilita subito i feature flag:
    - `no-code-agent-builder: FEATURE_STATE_ON` (sblocca `+ New agent -> Chat agent`)
    - `skills: FEATURE_STATE_ON`, `skill-sharing: FEATURE_STATE_ON`, `skill-sharing-without-admin-approval: FEATURE_STATE_ON` (sblocca la sezione `Skills` nel menu laterale)
@@ -33,8 +48,8 @@ Se tu (o un partecipante rimasto indietro) vuoi pubblicare automaticamente nella
 ~/lepida_workshop/setup.sh --solution
 ```
 
-### C. Comando Completo Postazione Docente #26 (con Demo `adk web` + BigQuery + Vertex AI Agent Engine)
-Se sulla tua postazione docente (#26) vuoi mostrare anche l'Agente ADK Pro-Code su `adk web` e innestarlo nel grafo del Chat Agent:
+### C. Comando Completo Postazione Docente #27 (con Demo `adk web` + BigQuery + Vertex AI Agent Engine)
+Se sulla tua postazione docente (#27) vuoi mostrare anche l'Agente ADK Pro-Code su `adk web` e innestarlo nel grafo del Chat Agent:
 ```bash
 git clone https://github.com/marangonic/lepida-gemini-enterprise-workshop.git ~/lepida_workshop && ~/lepida_workshop/setup.sh --instructor
 ```
