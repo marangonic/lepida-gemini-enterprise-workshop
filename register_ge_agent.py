@@ -163,19 +163,19 @@ def main():
         for ag in existing_agents:
             ag_name = ag.get("name", "")
             disp = ag.get("displayName", "")
-            if "adkAgentDefinition" in ag or disp == "Assistente Bandi e Pratiche Lepida":
+            if "adkAgentDefinition" in ag or disp == "Cloud Search & Sizing ADK Agent":
                 api_request("DELETE", f"https://discoveryengine.googleapis.com/v1alpha/{ag_name}", token, project_id)
         adk_body = {
-            "displayName": "Assistente Bandi e Pratiche Lepida",
+            "displayName": "Cloud Search & Sizing ADK Agent",
             "description": (
-                "Agente ADK su Vertex AI Agent Engine per interrogare i Bandi Regionali, "
-                "verificare o inserire pratiche degli Enti su BigQuery e calcolare i cofinanziamenti."
+                "Agente ADK standard su Vertex AI Agent Engine con tool di ricerca Knowledge Base "
+                "(FunctionTool), Google Search live (AgentTool), calcolo sizing/costi USD e Telemetria OpenTelemetry."
             ),
             "adkAgentDefinition": {
                 "toolSettings": {
                     "toolDescription": (
-                        "Interroga i bandi regionali, controlla o inserisce le pratiche dei Comuni/Enti "
-                        "su BigQuery e calcola il cofinanziamento regionale."
+                        "Cerca nella Knowledge Base tecnica Cloud & ADK, esegue ricerche web live tramite "
+                        "Google Search, calcola i costi mensili in USD (List, 1Y CUD, 3Y CUD) e verifica la telemetria."
                     )
                 },
                 "provisionedReasoningEngine": {
@@ -187,7 +187,7 @@ def main():
         st_adk, resp_adk = api_request("POST", agents_url, token, project_id, adk_body)
         if st_adk == 200 and isinstance(resp_adk, dict):
             adk_agent_resource = resp_adk.get("name", "")
-            print(f"  -> [ADK Agent] Registrato `Assistente Bandi e Pratiche Lepida` ({adk_agent_resource}).")
+            print(f"  -> [ADK Agent] Registrato `Cloud Search & Sizing ADK Agent` ({adk_agent_resource}).")
 
     if args.adk_only:
         return
@@ -266,7 +266,7 @@ def main():
 
     phase2_sub_agents = ["spec_determine_pa", "spec_benchmark_comuni"]
     if adk_agent_resource:
-        phase2_sub_agents.append("ref_adk_bigquery")
+        phase2_sub_agents.append("ref_adk_cloud_search")
 
     nodes = [
         {
@@ -375,8 +375,8 @@ def main():
     if adk_agent_resource:
         nodes.append(
             {
-                "id": "ref_adk_bigquery",
-                "displayName": "Assistente Bandi e Pratiche Lepida (ADK)",
+                "id": "ref_adk_cloud_search",
+                "displayName": "Cloud Search & Sizing ADK Agent",
                 "referencedAdkAgentNode": {
                     "sourceAgent": adk_agent_resource,
                     "sourceAgentName": adk_agent_resource,

@@ -48,16 +48,15 @@ Se tu (o un partecipante rimasto indietro) vuoi pubblicare automaticamente nella
 ~/lepida_workshop/setup.sh --solution
 ```
 
-### C. Comando Completo Postazione Docente #27 (con Demo `adk web` + BigQuery + Vertex AI Agent Engine)
-Se sulla tua postazione docente (#27) vuoi mostrare anche l'Agente ADK Pro-Code su `adk web` e innestarlo nel grafo del Chat Agent:
+### C. Comando Completo Postazione Docente #27 (con Demo ADK `cloud_search_agent` su `adk web`, Vertex AI Agent Engine, Telemetria & Agent Registry A2A)
+Se sulla tua postazione docente (#27) vuoi mostrare anche l'Agente ADK Pro-Code **`cloud_search_agent`** (*"Cloud Search & Sizing ADK Agent"*) su `adk web`, deployarlo su **Agent Platform Deployment (Vertex AI Agent Engine)** con **Cloud Trace, Cloud Logging, OpenTelemetry e Playground** e registrarlo con **Agent Card A2A** in **Agent Registry** (vedi la guida completa in **[`README_DEMO_ADK_AGENT_PLATFORM.md`](./README_DEMO_ADK_AGENT_PLATFORM.md)**):
 ```bash
-git clone https://github.com/marangonic/lepida-gemini-enterprise-workshop.git ~/lepida_workshop && ~/lepida_workshop/setup.sh --instructor
+git clone https://github.com/marangonic/lepida-gemini-enterprise-workshop.git ~/lepida_workshop && ~/lepida_workshop/setup.sh --with-adk
 ```
 E per lanciare `adk web` in Cloud Shell Web Preview (porta 8080):
 ```bash
 cd ~/lepida_workshop
-export MCP_TOOLBOX_URL="http://127.0.0.1:5000"
-adk web --port 8080 --allow_origins "*"
+./setup_and_run_cloudshell.sh
 ```
 
 ---

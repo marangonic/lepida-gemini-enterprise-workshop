@@ -458,7 +458,7 @@ def populate_gcs_docs(token: str):
 <h2>1. Architettura dello Sportello Polifunzionale AI nei 6 Quartieri di Bologna</h2>
 <p>Il Comune di Bologna ha attivato il progetto pilota <em>"Bologna Sportello Facile AI"</em> basato su <strong>Gemini Enterprise</strong> e <strong>Vertex AI Agent Engine</strong> in tutti i 6 Quartieri cittadini (<strong>Borgo Panigale-Reno, Navile, Porto-Saragozza, San Donato-San Vitale, Santo Stefano, Savena</strong>).</p>
 <ul>
-  <li><strong>Integrazione Banche Dati:</strong> l'assistente interroga in tempo reale i regolamenti comunali su Cloud Storage e lo stato delle pratiche tramite <strong>MCP Toolbox for Databases</strong> connesso a BigQuery.</li>
+  <li><strong>Integrazione Knowledge Base & Tool ADK:</strong> l'assistente interroga in tempo reale i regolamenti comunali su Cloud Storage e i tool ADK standard (FunctionTool & AgentTool) su Vertex AI Agent Engine.</li>
   <li><strong>Riduzione Tempi di Attesa:</strong> riduzione del tempo medio di risposta allo sportello da 18 minuti a 4 minuti (-77%).</li>
 </ul>
 
@@ -702,7 +702,7 @@ def populate_gcs_docs(token: str):
       <li>È obbligatorio attivare i filtri <strong>Model Armor</strong> contro prompt injection e <strong>Cloud DLP</strong> per il mascheramento di codici fiscali, IBAN e dati sanitari.</li>
     </ul>
   </li>
-  <li><strong>Tracciabilità e Conservazione dei Log di Audit per 24 Mesi:</strong> ogni interazione, query SQL eseguita tramite MCP Toolbox e versione del documento citato deve essere tracciata in Cloud Logging per un periodo minimo di <strong>24 mesi</strong> ai fini di verifica ispettiva e accesso civico.</li>
+  <li><strong>Tracciabilità e Conservazione dei Log di Audit per 24 Mesi:</strong> ogni interazione, invocazione di tool ADK tracciata via OpenTelemetry (Cloud Trace) e versione del documento citato deve essere tracciata in Cloud Logging per un periodo minimo di <strong>24 mesi</strong> ai fini di verifica ispettiva e accesso civico.</li>
 </ol>
 </body>
 </html>""",

@@ -21,6 +21,11 @@ git clone https://github.com/marangonic/lepida-gemini-enterprise-workshop.git ~/
    - **MODULO 2 (30 min):** Creare il Proprio Chat Agent No-Code in Gemini Enterprise (con modello **`Gemini 3.8 Flash`** e architettura Multi-Livello di Sub-Agents).
    - **MODULO 3 (45 min):** Creare e Utilizzare le **"Skills"** in Gemini Enterprise.
 
+> [!TIP]
+> ### 🤖 Demo Agente ADK Pro-Code (`cloud_search_agent`) — Cloud Shell (`adk web`), Agent Platform Deployment, Observability & Agent Registry (A2A)
+> Questo repository include anche l'esempio completo di agente sviluppato con **Google Agent Development Kit (ADK)** (**`cloud_search_agent` — "Cloud Search & Sizing ADK Agent"**) dotato di 4 tool standard ADK (`FunctionTool`, `ToolContext`, `AgentTool` con `google_search`), callback di telemetria/logging OpenTelemetry, deploy su **Vertex AI Agent Engine** con **Playground** attivo e registrazione **A2A** in **Agent Registry**.
+> 👉 **Consulta la guida passo-passo dedicata:** **[`README_DEMO_ADK_AGENT_PLATFORM.md`](./README_DEMO_ADK_AGENT_PLATFORM.md)**
+
 ---
 
 # Guida Operativa Partecipanti — Workshop Gemini Enterprise per Lepida ScpA e i Comuni dell'Emilia-Romagna
@@ -245,13 +250,19 @@ Esegui la [SKILL 3: BENCHMARK PROGETTI COMUNI ER]: Costruisci una tabella compar
 
 ---
 
-## 🛠️ Opzioni Avanzate (Per il Docente o per Caricare la Soluzione Completa)
+## 🛠️ Opzioni Avanzate & Demo Agente ADK (`cloud_search_agent`)
 
-- **Caricare automaticamente la Soluzione Completa (Chat Agent Multi-Livello con `Gemini 3.8 Flash` + 3 Skills già pubblicati nella Web App):**
+- **Guida Completa alla Demo ADK (`adk web` in Cloud Shell, Deploy su Agent Platform / Agent Engine, Telemetria OpenTelemetry, Playground e Registrazione A2A in Agent Registry):**
+  👉 **[Leggi il Sotto-README dedicato: `README_DEMO_ADK_AGENT_PLATFORM.md`](./README_DEMO_ADK_AGENT_PLATFORM.md)**
+- **Avviare l'Agente ADK `cloud_search_agent` in Cloud Shell con `adk web` (porta 8080):**
+  ```bash
+  cd ~/lepida_workshop && ./setup_and_run_cloudshell.sh
+  ```
+- **Caricare automaticamente la Soluzione Completa Gemini Enterprise (Chat Agent Multi-Livello con `Gemini 3.8 Flash` + 3 Skills già pubblicati nella Web App):**
   ```bash
   ~/lepida_workshop/setup.sh --solution
   ```
-- **Modalità Docente Completa (include anche MCP Toolbox + Deploy Agente ADK su Vertex AI Agent Engine):**
+- **Modalità Completa con Deploy dell'Agente ADK `cloud_search_agent` su Vertex AI Agent Engine + Telemetria + Agent Registry (A2A) + Soluzione Gemini Enterprise:**
   ```bash
-  ~/lepida_workshop/setup.sh --instructor
+  ~/lepida_workshop/setup.sh --with-adk
   ```

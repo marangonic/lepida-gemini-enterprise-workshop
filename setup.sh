@@ -16,10 +16,14 @@
 #               con Chat Agent (no-code-agent-builder) e Skills già sbloccati,
 #               e stampa del LINK DIRETTO alla Web App di Gemini Enterprise!
 #
-# Opzioni aggiuntive (per il Docente o per caricare la soluzione già pronta):
+# Opzioni aggiuntive (per il Docente o per la Demo ADK):
 #   --solution / --auto-ui : Crea e pubblica automaticamente anche il Chat Agent Multi-Livello
 #                            (con modello Gemini 3.8 Flash) e le 3 Skills nella Web App
-#   --instructor           : Esegue anche il deploy dell'Agente ADK + MCP Toolbox (:5000) + Soluzione
+#   --instructor / --with-adk : Prepara ed esegue il deploy dell'Agente ADK standard
+#                               (`cloud_search_agent` — "Cloud Search & Sizing ADK Agent")
+#                               su Agent Platform Deployment (Vertex AI Agent Engine) con
+#                               Cloud Trace, Cloud Logging, OpenTelemetry, Playground
+#                               e registrazione A2A in Agent Registry.
 # ==============================================================================
 
 set -euo pipefail
@@ -31,7 +35,7 @@ INSTRUCTOR_MODE=false
 SOLUTION_MODE=false
 for arg in "$@"; do
   case "$arg" in
-    --instructor|--full-deploy)
+    --instructor|--full-deploy|--with-adk)
       INSTRUCTOR_MODE=true
       SOLUTION_MODE=true
       ;;
@@ -54,7 +58,7 @@ export LEPIDA_BUCKET_NAME="${LEPIDA_BUCKET_NAME:-${PROJECT_ID}-lepida-comuni-er}
 echo ""
 echo "================================================================================"
 echo " 🚀 AVVIO SETUP AUTOMATICO WORKSHOP LEPIDA — GEMINI ENTERPRISE (MODULI 2 & 3)"
-echo "    Progetto Qwiklabs : ${PROJECT_ID} (Numero: ${PROJECT_NUMBER})"
+echo "    Progetto GCP      : ${PROJECT_ID} (Numero: ${PROJECT_NUMBER})"
 echo "    Bucket GCS Univoco: gs://${LEPIDA_BUCKET_NAME}"
 echo "================================================================================"
 echo ""
@@ -67,6 +71,11 @@ gcloud services enable \
   aiplatform.googleapis.com \
   bigquery.googleapis.com \
   logging.googleapis.com \
+  cloudtrace.googleapis.com \
+  monitoring.googleapis.com \
+  telemetry.googleapis.com \
+  agentregistry.googleapis.com \
+  apphub.googleapis.com \
   --project="${PROJECT_ID}" --quiet
 echo "✅ [Passo 1/3] Servizi Google Cloud attivati."
 echo ""
@@ -84,34 +93,36 @@ echo "✅ [Passo 3/3] App Gemini Enterprise e Connettore GCS pronti e indicizzat
 echo ""
 
 if [[ "${INSTRUCTOR_MODE}" == "true" ]]; then
-  echo "⏳ [Modalità Docente] Preparazione MCP Toolbox (:5000) e deploy Agente ADK su Vertex AI Agent Engine..."
-  if [[ -f "tools.yaml.template" ]]; then
-    envsubst '${PROJECT_ID}' < tools.yaml.template > tools.yaml
-  fi
-  cat <<EOF > lepida_agent/.env
+  echo "⏳ [Modalità Demo ADK] Preparazione di 'cloud_search_agent' (Cloud Search & Sizing ADK Agent),"
+  echo "   deploy su Agent Platform Deployment (Agent Engine) con Telemetria/Playground e registrazione A2A in Agent Registry..."
+  cat <<EOF > cloud_search_agent/.env
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
 GOOGLE_CLOUD_PROJECT=${PROJECT_ID}
-GOOGLE_CLOUD_LOCATION=global
+GOOGLE_CLOUD_LOCATION=us-central1
 MODEL=gemini-2.5-flash
+GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY=true
+OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT=true
+ADK_CAPTURE_MESSAGE_CONTENT_IN_SPANS=true
 EOF
   pip install --quiet --upgrade -r requirements.txt
-  if [[ ! -x "./toolbox" ]]; then
-    curl -s -L -o toolbox https://storage.googleapis.com/genai-toolbox/v0.16.0/linux/amd64/toolbox
-    chmod +x toolbox
-  fi
-  if ! ss -tulpn 2>/dev/null | grep -q ":5000 "; then
-    nohup ./toolbox --tools-file tools.yaml --port 5000 </dev/null >/tmp/toolbox.log 2>&1 &
-    sleep 2
-  fi
-  unset MCP_TOOLBOX_URL
-  python3 deploy_adk_agent.py
+
   RE_SA="service-${PROJECT_NUMBER}@gcp-sa-aiplatform-re.iam.gserviceaccount.com"
-  for ROLE in "roles/bigquery.user" "roles/bigquery.dataEditor" "roles/serviceusage.serviceUsageConsumer"; do
+  for ROLE in \
+    "roles/aiplatform.user" \
+    "roles/cloudtrace.agent" \
+    "roles/telemetry.tracesWriter" \
+    "roles/logging.logWriter" \
+    "roles/monitoring.metricWriter" \
+    "roles/serviceusage.serviceUsageConsumer" \
+    "roles/storage.objectViewer"; do
     gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
       --member="serviceAccount:${RE_SA}" \
       --role="${ROLE}" \
-      --quiet >/dev/null
+      --condition=None \
+      --quiet >/dev/null || true
   done
+
+  python3 deploy_adk_agent.py
 fi
 
 if [[ "${SOLUTION_MODE}" == "true" ]]; then
@@ -124,7 +135,7 @@ fi
 WEB_APP_URL="$(cat "${SCRIPT_DIR}/WEB_APP_URL.txt" 2>/dev/null || echo "https://console.cloud.google.com/gemini-enterprise/apps?project=${PROJECT_ID}")"
 
 echo "================================================================================"
-echo " 🎉 CONFIGURAZIONE COMPLETATA! TUTTO PRONTO PER I MODULI 2 E 3"
+echo " 🎉 CONFIGURAZIONE COMPLETATA! TUTTO PRONTO PER I MODULI 2, 3 E DEMO ADK"
 echo "================================================================================"
 echo ""
 echo " 🌐 1️⃣  CLICCA QUI PER APRIRE DIRETTAMENTE LA WEB APP DI GEMINI ENTERPRISE:"
@@ -137,7 +148,7 @@ echo " 📂 3️⃣  IL TUO BUCKET GCS UNIVOCO E IL CONNETTORE GIÀ COLLEGATO:"
 echo "        Bucket     : gs://${LEPIDA_BUCKET_NAME}/documenti_pa/"
 echo "        Data Store : Corpus Documentale Lepida e Comuni Emilia-Romagna 2026 (lepida-comuni-er-ds)"
 echo ""
-echo " 🤖 4️⃣  ORA PUOI INIZIARE SUBITO NELLA WEB APP:"
-echo "        - MODULO 2 (30 min): Crea il tuo Chat Agent No-Code con modello 'Gemini 3.8 Flash'"
-echo "        - MODULO 3 (45 min): Crea e utilizza le 3 Skills in Gemini Enterprise"
+echo " 🤖 4️⃣  DEMO ADK ('cloud_search_agent' — Cloud Shell, Agent Engine, Telemetria & Agent Registry):"
+echo "        Guida completa : README_DEMO_ADK_AGENT_PLATFORM.md"
+echo "        Avvio adk web  : ./setup_and_run_cloudshell.sh"
 echo "================================================================================"

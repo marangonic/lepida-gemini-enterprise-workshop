@@ -1,6 +1,11 @@
-toolbox
 __pycache__/
 *.pyc
+.venv/
+venv*/
+.env
+adc.json
+adk_web.log
 WEB_APP_URL.txt
-tools.yaml
-PLAYBOOK_DOCENTE_WORKSHOP_LEPIDA.md
+IL_MIO_AGENTE_ADK.txt
+DEPLOYED_AGENT_RESOURCE.txt
+deployment_metadata.json
